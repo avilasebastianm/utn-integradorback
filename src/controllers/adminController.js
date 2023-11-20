@@ -1,4 +1,4 @@
-import {User} from "../models/userModels.js";
+import {User} from "../models/user.js";
 
 export async function obtenerUsuarios(req, res) {
     return await User.findAll().then((users) => {
