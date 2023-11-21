@@ -23,4 +23,4 @@ try {
 
 }
 autenticar();
-export { sequelize};
+export { sequelize, autenticar};
