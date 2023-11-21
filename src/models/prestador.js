@@ -35,6 +35,9 @@ const Prestador = sequelize.define('prestador', {
 
     }
 
+}, {
+    timestamps: false,
+    freezeTableName: true,
 })
 
 User.hasOne(Prestador, {foreignKey: 'users_id'});

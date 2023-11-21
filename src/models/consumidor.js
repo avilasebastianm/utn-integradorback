@@ -1,7 +1,6 @@
-import sequelize from "../config/database.js";
+import {sequelize} from "../config/database.js";
 import {DataTypes} from "sequelize";
 import {User} from "./user.js";
-
 
 
 const Consumidor = sequelize.define('consumidor', {
@@ -17,6 +16,9 @@ const Consumidor = sequelize.define('consumidor', {
     }
 
 
+}, {
+    timestamps: false,
+    freezeTableName: true,
 });
 
 User.hasOne(Consumidor, { foreignKey: 'usuarioId' });
