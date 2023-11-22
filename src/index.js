@@ -1,11 +1,10 @@
-import express from "express";
-import { autenticar } from "config/database.js";
+import express from 'express';
+const app = express();
+const port = 3000;
+import {Router} from './router/routerWeb.js';
+app.use(express.json());
 
-const app = express()
-const port = 3000
-import { crearUsuario } from "./controllers/userController.js";
 
-autenticar();
+app.use('/', Router);
 
-app.post("/usuario", crearUsuario);
-app.listen(port,()=>{console.log("Servidor iniciado en el puerto ${port}");})
+app.listen(port,()=>{console.log("Servidor iniciado ");})

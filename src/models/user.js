@@ -34,7 +34,7 @@ const User = sequelize.define('users', {
     },
     foto: {
         type: DataTypes.STRING,
-        allowNull: false
+       // allowNull: false
     },
     fecha_nacimiento: {
         type: DataTypes.DATE,
@@ -42,7 +42,7 @@ const User = sequelize.define('users', {
     },
     direccion: {
         type: DataTypes.STRING,
-        allowNull: false
+        //allowNull: false
     },
     tipoId: {
         type: DataTypes.INTEGER,
