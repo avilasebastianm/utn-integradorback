@@ -9,7 +9,7 @@ const username = process.env.USER;
 const database = process.env.DATABASE;
 
 
-const sequelize = new Sequelize('integradorutnweb', 'seba', '4854', {
+const sequelize = new Sequelize('integradorwebutn', 'seba', '4854', {
     host: 'localhost',
     dialect: 'mysql',
 });

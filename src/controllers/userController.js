@@ -1,7 +1,4 @@
-import { User } from "../models/user.js";
-import Joi from 'joi';
-
-
+import { UserModel } from "../models/user.model.js";
 
 
 export async function crearUsuario(req, res   ) {
@@ -15,9 +12,11 @@ export async function crearUsuario(req, res   ) {
             telefono,
             fotoPerfil,
             fecha_nacimiento,
+            direccion,
+            tipo_user
         } = req.body;
 
-        return await User.create({
+        return await UserModel.create({
             nombre,
             apellido,
             email,
@@ -27,6 +26,8 @@ export async function crearUsuario(req, res   ) {
             telefono,
             fotoPerfil,
             fecha_nacimiento,
+            direccion,
+            tipo_user
         }).then((user) => {
                 res.status(200).json(user);
             })
@@ -37,81 +38,87 @@ export async function crearUsuario(req, res   ) {
 
 
 
+export async function updateUser(req, res) {
+    const { id } = req.params;
+    const {
+        nombre,
+        apellido,
+        email,
+        password,
+        tipo_dni,
+        dni,
+        telefono,
+        foto_perfil,
+        fecha_nacimiento,
+        direccion
+    } = req.body;
 
-    //validarciones
-// export async function validarcrearUsuario(req, res, next) {
-//     const schema = Joi.object({
-//         nombre: Joi.string().required().messages({
-//             'string.empty': 'El campo nombre es obligatorio.',
-//             'any.required': 'El campo nombre es obligatorio.'
-//         }),
-//         apellido: Joi.string().required().messages({
-//             'string.empty': 'El campo apellido es obligatorio.',
-//             'any.required': 'El campo apellido es obligatorio.'
-//         }),
-//         email: Joi.string().email().required().messages({
-//             'string.email': 'El campo email debe ser una dirección de correo electrónico válida.',
-//             'string.empty': 'El campo email es obligatorio.',
-//             'any.required': 'El campo email es obligatorio.'
-//         }),
-//         dni: Joi.number().required().messages({
-//             'number.base': 'El campo dni debe ser un número.',
-//             'any.required': 'El campo dni es obligatorio.'
-//         }),
-//         telefono: Joi.number().required().messages({
-//             'number.base': 'El campo teléfono debe ser un número.',
-//             'any.required': 'El campo teléfono es obligatorio.'
-//         }),
-//         fotoPerfil: Joi.string().required().messages({
-//             'string.empty': 'El campo fotoPerfil es obligatorio.',
-//             'any.required': 'El campo fotoPerfil es obligatorio.'
-//         }),
-//         fecha_nacimiento: Joi.date().required().messages({
-//             'date.base': 'El campo fecha de nacimiento debe ser una fecha válida.',
-//             'any.required': 'El campo fecha de nacimiento es obligatorio.'
-//         }),
-//     });
-//     validateRequest(req, next, schema);
-// }
+    try {
+        const usuario = await UserModel.findByPk(id);
+        if (!usuario) {
+            return res.status(404).json({ msg: "Usuario no encontrado" });
+        }
 
+        usuario.nombre = nombre;
+        usuario.apellido = apellido;
+        usuario.password = password;
+        usuario.dni = dni;
+        usuario.telefono = telefono;
+        usuario.tipo_dni = tipo_dni;
+        usuario.fecha_nacimiento = fecha_nacimiento;
+        usuario.foto_perfil = foto_perfil;
 
-//
-// export async function validarcrearUsuario(req, res,next ) {
-//     const schema = Joi.object({
-//         nombre: Joi.string().required(),
-//         apellido: Joi.string().required(),
-//         email: Joi.string().email().required(),
-//        // password: Joi.string().min(6).required(),
-//         //confirmPassword: Joi.string().valid(Joi.ref('password')).required(),
-//        // tipo_dni: Joi.string().valid('Admin', 'User', 'Prestador').required(),
-//         dni: Joi.number().required(),
-//         telefono: Joi.number().required(),
-//         fotoPerfil: Joi.string().required(),
-//         fecha_nacimiento: Joi.date().required(),
-//
-//     });
-//     validateRequest(req, next, schema);
-// }
+        await usuario.save();
 
-
-
-
-    function updateUser(req, res, next) {
-        const schema = Joi.object({
-            nombre: Joi.string().required(),
-            apellido: Joi.string().required(),
-            email: Joi.string().email().required(),
-            password: Joi.string().min(6).required(),
-            confirmPassword: Joi.string().valid(Joi.ref('password')).required(),
-            tipo_dni: Joi.string().required(),
-            dni: Joi.number().required(),
-            telefono: Joi.number().required(),
-            fotoPerfil: Joi.string().required(),
-            fecha_nacimiento: Joi.date().required(),
-        }).with('password', 'confirmPassword');
-        validateRequest(req, next, schema);
+        res.status(200).json({ msg: "Usuario actualizado: " + usuario.email });
+    } catch (error) {
+        res.status(500).json({ msg: "Error al actualizar el usuario: " + error });
     }
+}
 
 
+export async function obtenerUsuarioPorId(req, res) {
+    const { id } = req.params;
+
+    return await UserModel.findByPk(id)
+        .then((usuario) => {
+            if (!usuario) {
+                return res.status(404).json({
+                    msg: "Usuario no encontrado",
+                });
+            }
+
+            res.status(200).json(usuario);
+        })
+        .catch((error) => {
+            res.status(500).json(error);
+        });
+}
+export async function obtenerUsuarios(req, res) {
+    return await UserModel.findAll()
+        .then((usuarios) => {
+            res.status(200).json(usuarios);
+        })
+        .catch((error) => {
+            res.status(500).json(error);
+        })
+}
+
+export async function borrarUsuario(req, res) {
+    const { id } = req.params;
+
+    try {
+        const usuario = await UserModel.findByPk(id);
+        if (!usuario) {
+            return res.status(404).json({ msg: "Usuario no encontrado" });
+        }
+
+        await usuario.destroy();
+
+        res.status(200).json({ msg: "Usuario eliminado: " + usuario.email });
+    } catch (error) {
+        res.status(500).json({ msg: "Error al eliminar el usuario: " + error });
+    }
+}
 
 
